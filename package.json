@@ -1,6 +1,9 @@
 {
   "name": "@darkfibre/sdk",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "TypeScript SDK for Darkfibre Solana DEX API",
   "type": "module",
   "main": "dist/index.js",

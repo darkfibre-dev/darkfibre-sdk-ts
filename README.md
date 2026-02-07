@@ -5,6 +5,8 @@ Darkfibre builds the transaction, **you** sign it locally and the SDK submits it
 
 **Your private keys never leave your device**.
 
+[![npm version](https://img.shields.io/npm/v/@darkfibre/sdk.svg)](https://www.npmjs.com/package/@darkfibre/sdk)
+
 ## What this SDK does
 It wraps the core flow:
 

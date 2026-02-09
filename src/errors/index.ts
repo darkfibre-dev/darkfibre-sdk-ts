@@ -1,3 +1,3 @@
-export { APIError } from './api.error';
-export { SigningError } from './signing.error';
-export { ValidationError } from './validation.error';
+export { APIError } from './api.error.js';
+export { SigningError } from './signing.error.js';
+export { ValidationError } from './validation.error.js';

@@ -1,4 +1,4 @@
-import { TradeEstimates, TradeAmounts } from './trade';
+import { TradeEstimates, TradeAmounts } from './trade.js';
 
 /**
  * Standard API error response structure

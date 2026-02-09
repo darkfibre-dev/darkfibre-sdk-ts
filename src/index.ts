@@ -4,7 +4,7 @@
  */
 
 // Main client
-export { DarkfibreSDK } from './client';
+export { DarkfibreSDK } from './client.js';
 
 // Types
 export type {
@@ -18,10 +18,10 @@ export type {
   TradeAmounts,
   TransactionResult,
   RegisterResult,
-} from './types';
+} from './types/index.js';
 
 // Errors
-export { APIError, SigningError, ValidationError } from './errors';
+export { APIError, SigningError, ValidationError } from './errors/index.js';
 
 // Default export
-export { DarkfibreSDK as default } from './client';
+export { DarkfibreSDK as default } from './client.js';

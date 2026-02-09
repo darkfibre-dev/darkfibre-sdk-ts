@@ -5,10 +5,10 @@ import {
   signTransaction,
   getBase64EncodedWireTransaction,
   signBytes,
-  getAddressFromPublicKey
+  getAddressFromPublicKey,
 } from '@solana/kit';
 import bs58 from 'bs58';
-import { SigningError } from '../errors';
+import { SigningError } from '../errors/index.js';
 
 /**
  * Creates a CryptoKeyPair from a base58-encoded private key

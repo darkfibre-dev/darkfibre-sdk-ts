@@ -1,6 +1,6 @@
-import { HttpClient } from '../core/http-client';
-import { TransactionSigner } from '../core/signer';
-import { ValidationError } from '../errors';
+import { HttpClient } from '../core/http-client.js';
+import { TransactionSigner } from '../core/signer.js';
+import { ValidationError } from '../errors/index.js';
 import {
   BuyOptions,
   SellOptions,
@@ -9,7 +9,7 @@ import {
   TradeResponse,
   SubmitResponse,
   SubmitRequest,
-} from '../types';
+} from '../types/index.js';
 
 /**
  * Service for handling trading operations

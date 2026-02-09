@@ -1,4 +1,4 @@
-import { Priority } from './config';
+import { Priority } from './config.js';
 
 /**
  * Swap mode for determining how amount is interpreted

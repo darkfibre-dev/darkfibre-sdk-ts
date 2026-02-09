@@ -1,6 +1,6 @@
-import { HttpClient } from './core/http-client';
-import { TransactionSigner, createKeyPairFromBase58 } from './core/signer';
-import { TradeService } from './services/trade.service';
+import { HttpClient } from './core/http-client.js';
+import { TransactionSigner, createKeyPairFromBase58 } from './core/signer.js';
+import { TradeService } from './services/trade.service.js';
 import {
   SDKConfig,
   BuyOptions,
@@ -8,8 +8,8 @@ import {
   SwapOptions,
   TransactionResult,
   RegisterResult,
-} from './types';
-import { RegisterRequest, RegisterResponse } from './types/api';
+} from './types/index.js';
+import { RegisterRequest, RegisterResponse } from './types/api.js';
 import { signBytes, getAddressFromPublicKey } from '@solana/kit';
 import bs58 from 'bs58';
 

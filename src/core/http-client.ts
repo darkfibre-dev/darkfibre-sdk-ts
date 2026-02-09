@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import https from 'https';
-import { APIError } from '../errors';
-import { APIErrorResponse } from '../types';
+import { APIError } from '../errors/index.js';
+import { APIErrorResponse } from '../types/index.js';
 
 /**
  * HTTP client wrapper for making API requests
@@ -44,11 +44,7 @@ export class HttpClient {
       (error: AxiosError<APIErrorResponse>) => {
         // Handle timeout errors
         if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
-          throw new APIError(
-            'TIMEOUT',
-            'Request timed out',
-            408
-          );
+          throw new APIError('TIMEOUT', 'Request timed out', 408);
         }
 
         // Handle API error responses
@@ -59,11 +55,7 @@ export class HttpClient {
 
         // Handle network errors
         if (!error.response) {
-          throw new APIError(
-            'NETWORK_ERROR',
-            error.message || 'Network error occurred',
-            0
-          );
+          throw new APIError('NETWORK_ERROR', error.message || 'Network error occurred', 0);
         }
 
         throw error;
@@ -77,7 +69,11 @@ export class HttpClient {
    * @param data - Request body
    * @param timeout - Optional per-request timeout in ms (overrides the default)
    */
-  public async post<T, D = unknown>(url: string, data: D, timeout?: number): Promise<AxiosResponse<T>> {
+  public async post<T, D = unknown>(
+    url: string,
+    data: D,
+    timeout?: number
+  ): Promise<AxiosResponse<T>> {
     return this.client.post<T>(url, data, timeout ? { timeout } : undefined);
   }
 

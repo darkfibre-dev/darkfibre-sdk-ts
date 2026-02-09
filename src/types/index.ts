@@ -1,5 +1,5 @@
 // Configuration types
-export type { SDKConfig, Priority } from './config';
+export type { SDKConfig, Priority } from './config.js';
 
 // Trade types
 export type {
@@ -10,7 +10,7 @@ export type {
   TradeEstimates,
   TradeAmounts,
   TransactionResult,
-} from './trade';
+} from './trade.js';
 
 // API types
 export type {
@@ -21,4 +21,4 @@ export type {
   RegisterRequest,
   RegisterResponse,
   RegisterResult,
-} from './api';
+} from './api.js';

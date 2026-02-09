@@ -5,7 +5,7 @@
     "lib": ["ES2020", "DOM"],
     
     /* Modules */
-    "module": "commonjs",
+    "module": "ES2020",
     "rootDir": "./src",
     "moduleResolution": "node",
     "resolveJsonModule": true,

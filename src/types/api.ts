@@ -93,9 +93,9 @@ export interface SubmitResponse {
     outputMint: string;
 
     /**
-     * Actual trade result
+     * Actual trade result (may be null if the RPC does not return parsed amounts)
      */
-    tradeResult: TradeAmounts;
+    tradeResult: TradeAmounts | null;
 
     /**
      * Priority fee cost in SOL

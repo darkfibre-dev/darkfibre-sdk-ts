@@ -89,7 +89,10 @@ export class TradeService {
       platform,
       inputMint,
       outputMint,
-      tradeResult,
+      tradeResult: tradeResult ?? {
+        inputAmount: estimates.inputAmount,
+        outputAmount: estimates.outputAmount,
+      },
       priorityCost,
     };
   }
@@ -137,7 +140,10 @@ export class TradeService {
       platform,
       inputMint,
       outputMint,
-      tradeResult,
+      tradeResult: tradeResult ?? {
+        inputAmount: estimates.inputAmount,
+        outputAmount: estimates.outputAmount,
+      },
       priorityCost,
     };
   }
@@ -185,7 +191,10 @@ export class TradeService {
       platform,
       inputMint,
       outputMint,
-      tradeResult,
+      tradeResult: tradeResult ?? {
+        inputAmount: estimates.inputAmount,
+        outputAmount: estimates.outputAmount,
+      },
       priorityCost,
     };
   }

@@ -12,6 +12,7 @@ import { runRegisterTests } from './register.test';
 import { runBuySellTests } from './buy-sell.test';
 import { runSwapTests } from './swap.test';
 import { runErrorTests } from './errors.test';
+import { runProfileTests } from './profile.test';
 
 // Load environment variables
 dotenv.config();
@@ -71,6 +72,7 @@ async function main() {
   try {
     // Run all test suites sequentially
     await runRegisterTests(ctx);
+    await runProfileTests(sdk, ctx);
     await runBuySellTests(sdk, ctx);
     await runSwapTests(sdk, ctx);
     await runErrorTests(sdk, ctx);

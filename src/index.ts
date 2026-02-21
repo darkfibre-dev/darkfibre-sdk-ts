@@ -18,6 +18,7 @@ export type {
   TradeAmounts,
   TransactionResult,
   RegisterResult,
+  ProfileResult,
 } from './types/index.js';
 
 // Errors

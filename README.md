@@ -114,6 +114,29 @@ const sdk = new DarkfibreSDK({
 
 For simpler browser-based wallet registration, you can use: [https://darkfibre.dev/register](https://darkfibre.dev/register)
 
+#### `getProfile(): Promise<ProfileResult>`
+
+Returns the authenticated user's wallet info, 30-day rolling trade volume, and current fee tier. The fee tier is computed live from the rolling window on every request.
+
+**Returns:** `ProfileResult` with:
+- `walletAddress` - Registered wallet address
+- `createdAt` - Account creation timestamp (ISO 8601)
+- `volume.sol30d` - Total SOL traded in the last 30 days
+- `volume.trades30d` - Number of confirmed trades in the last 30 days
+- `fee.bps` - Current platform fee in basis points (e.g. `50` = 0.5%)
+- `fee.decimal` - Current platform fee as a decimal (e.g. `0.005` = 0.5%)
+- `fee.nextBps` - Fee tier unlocked at the next volume threshold (`null` if already at top tier)
+- `fee.nextThresholdSol` - SOL volume needed to reach `nextBps` (`null` if already at top tier)
+
+**Example:**
+
+```typescript
+const profile = await sdk.getProfile();
+console.log('Wallet:', profile.walletAddress);
+console.log('30d volume:', profile.volume.sol30d, 'SOL');
+console.log('Current fee:', profile.fee.bps, 'bps');
+```
+
 #### `buy(options: BuyOptions): Promise<TransactionResult>`
 
 Buy tokens using SOL.
@@ -240,6 +263,7 @@ import type {
   TradeEstimates,
   TradeAmounts,
   TransactionResult,
+  ProfileResult,
 } from '@darkfibre/sdk';
 ```
 

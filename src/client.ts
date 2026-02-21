@@ -8,8 +8,9 @@ import {
   SwapOptions,
   TransactionResult,
   RegisterResult,
+  ProfileResult,
 } from './types/index.js';
-import { RegisterRequest, RegisterResponse } from './types/api.js';
+import { RegisterRequest, RegisterResponse, ProfileResponse } from './types/api.js';
 import { signBytes, getAddressFromPublicKey } from '@solana/kit';
 import bs58 from 'bs58';
 
@@ -34,6 +35,7 @@ import bs58 from 'bs58';
  */
 export class DarkfibreSDK {
   private static readonly MESSAGE_PREFIX = 'darkfibre:';
+  private readonly httpClient: HttpClient;
   private readonly tradeService: TradeService;
 
   /**
@@ -43,11 +45,11 @@ export class DarkfibreSDK {
   constructor(config: SDKConfig) {
     // Initialize core components
     const baseUrl = config.baseUrl ?? 'https://api.darkfibre.dev/v1';
-    const httpClient = new HttpClient(baseUrl, config.apiKey);
+    this.httpClient = new HttpClient(baseUrl, config.apiKey);
     const signer = new TransactionSigner(config.privateKey);
 
     // Initialize services
-    this.tradeService = new TradeService(httpClient, signer);
+    this.tradeService = new TradeService(this.httpClient, signer);
   }
 
   /**
@@ -161,5 +163,22 @@ export class DarkfibreSDK {
    */
   public async swap(options: SwapOptions): Promise<TransactionResult> {
     return this.tradeService.swap(options);
+  }
+
+  /**
+   * Get the authenticated user's profile, including wallet info, 30-day trade volume, and current fee tier
+   * @returns Profile result with wallet address, volume, and fee tier info
+   *
+   * @example
+   * ```typescript
+   * const profile = await sdk.getProfile();
+   * console.log('Wallet:', profile.walletAddress);
+   * console.log('30d volume:', profile.volume.sol30d, 'SOL');
+   * console.log('Current fee:', profile.fee.bps, 'bps');
+   * ```
+   */
+  public async getProfile(): Promise<ProfileResult> {
+    const response = await this.httpClient.get<ProfileResponse>('/auth/profile');
+    return response.data.data;
   }
 }

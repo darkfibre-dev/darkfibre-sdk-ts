@@ -173,3 +173,58 @@ export interface RegisterResult {
    */
   walletAddress: string;
 }
+
+/**
+ * Response from the profile endpoint
+ */
+export interface ProfileResponse {
+  success: boolean;
+  data: {
+    walletAddress: string;
+    createdAt: string;
+    volume: {
+      /** Total SOL traded in the last 30 days */
+      sol30d: number;
+      /** Number of confirmed trades in the last 30 days */
+      trades30d: number;
+    };
+    fee: {
+      /** Current platform fee in basis points (e.g. 50 = 0.5%) */
+      bps: number;
+      /** Current platform fee as a decimal (e.g. 0.005 = 0.5%) */
+      decimal: number;
+      /** Fee tier unlocked at the next volume threshold (null if already at top tier) */
+      nextBps: number | null;
+      /** SOL volume needed to reach nextBps (null if already at top tier) */
+      nextThresholdSol: number | null;
+    };
+  };
+}
+
+/**
+ * Result returned from getProfile method
+ */
+export interface ProfileResult {
+  /** Registered wallet address */
+  walletAddress: string;
+  /** Account creation timestamp (ISO 8601) */
+  createdAt: string;
+  /** 30-day rolling trade volume */
+  volume: {
+    /** Total SOL traded in the last 30 days */
+    sol30d: number;
+    /** Number of confirmed trades in the last 30 days */
+    trades30d: number;
+  };
+  /** Current fee tier info */
+  fee: {
+    /** Current platform fee in basis points (e.g. 50 = 0.5%) */
+    bps: number;
+    /** Current platform fee as a decimal (e.g. 0.005 = 0.5%) */
+    decimal: number;
+    /** Fee tier unlocked at the next volume threshold (null if already at top tier) */
+    nextBps: number | null;
+    /** SOL volume needed to reach nextBps (null if already at top tier) */
+    nextThresholdSol: number | null;
+  };
+}

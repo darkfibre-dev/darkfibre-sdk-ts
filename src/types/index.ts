@@ -21,4 +21,6 @@ export type {
   RegisterRequest,
   RegisterResponse,
   RegisterResult,
+  ProfileResponse,
+  ProfileResult,
 } from './api.js';

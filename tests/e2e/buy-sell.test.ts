@@ -1,4 +1,4 @@
-import { DarkfibreSDK } from '../../src/index';
+import { DarkfibreSDK, Priority } from '../../src/index';
 import {
   TEST_TOKEN_MINT,
   TEST_SOL_AMOUNT,
@@ -16,7 +16,7 @@ async function buyAndSellBack(
   mint: string,
   solAmount: number,
   slippage: number,
-  priority: 'fast' | 'faster' | 'fastest'
+  priority: Priority
 ) {
   const buyResult = await sdk.buy({
     mint,

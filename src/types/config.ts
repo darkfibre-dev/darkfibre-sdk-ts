@@ -24,4 +24,4 @@ export interface SDKConfig {
 /**
  * Transaction priority level affecting fee and processing speed
  */
-export type Priority = 'fast' | 'faster' | 'fastest';
+export type Priority = 'economy' | 'fast' | 'faster' | 'fastest';

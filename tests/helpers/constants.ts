@@ -16,15 +16,15 @@ export const TEST_TOKEN_MINT = '5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2';
 /**
  * Small test amounts to minimize cost
  */
-export const TEST_SOL_AMOUNT = 0.002;
+export const TEST_SOL_AMOUNT = 0.0001;
 export const TEST_SLIPPAGE = 0.05; // 5%
-export const TEST_PRIORITY = 'fast' as const;
+export const TEST_PRIORITY = 'economy' as const;
 
 /**
  * Very restrictive limits for error testing
  */
 export const VERY_LOW_MAX_PRICE_IMPACT = 0.00001; // 0.001%
-export const VERY_LOW_MAX_PRIORITY_COST = 0.0000001; // Very small amount
+export const VERY_LOW_MAX_PRIORITY_COST = 0.00000001; // Very small amount
 
 /**
  * Invalid mint address for error testing

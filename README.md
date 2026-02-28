@@ -145,7 +145,7 @@ Buy tokens using SOL.
 - `mint` - Token mint address to buy
 - `solAmount` - Amount of SOL to spend
 - `slippage` - Slippage tolerance (e.g., 0.01 for 1%)
-- `priority` - Transaction priority: `'fast'`, `'faster'`, or `'fastest'`
+- `priority` - Transaction priority: `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
 - `maxPriceImpact` - (Optional) Maximum price impact allowed (e.g., 0.1 for 10%)
 - `maxPriorityCost` - (Optional) Maximum priority fee cost in SOL (e.g., 0.05 for 0.05 SOL)
 
@@ -176,7 +176,7 @@ Sell tokens for SOL.
 - `mint` - Token mint address to sell
 - `tokenAmount` - Amount of tokens to sell
 - `slippage` - Slippage tolerance (e.g., 0.01 for 1%)
-- `priority` - Transaction priority: `'fast'`, `'faster'`, or `'fastest'`
+- `priority` - Transaction priority: `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
 - `maxPriceImpact` - (Optional) Maximum price impact allowed (e.g., 0.1 for 10%).
 - `maxPriorityCost` - (Optional) Maximum priority fee cost in SOL (e.g., 0.05 for 0.05 SOL).
 
@@ -205,7 +205,7 @@ Swap tokens using the generic swap endpoint (power endpoint).
 - `amount` - Amount to swap
 - `swapMode` - `'exactIn'` or `'exactOut'`
 - `slippage` - Slippage tolerance (e.g., 0.05 for 5%)
-- `priority` - `'fast'`, `'faster'`, or `'fastest'`
+- `priority` - `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
 - `maxPriceImpact` - (Optional) Maximum price impact allowed (e.g., 0.1 for 10%).
 - `maxPriorityCost` - (Optional) Maximum priority fee cost in SOL (e.g., 0.05 for 0.05 SOL).
 

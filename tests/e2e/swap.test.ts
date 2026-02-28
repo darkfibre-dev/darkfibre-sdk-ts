@@ -1,4 +1,4 @@
-import { DarkfibreSDK } from '../../src/index';
+import { DarkfibreSDK, Priority } from '../../src/index';
 import {
   SOL_MINT,
   TEST_TOKEN_MINT,
@@ -17,7 +17,7 @@ async function swapAndSwapBack(
   tokenMint: string,
   solAmount: number,
   slippage: number,
-  priority: 'fast' | 'faster' | 'fastest'
+  priority: Priority
 ) {
   const swapToTokenResult = await sdk.swap({
     inputMint: SOL_MINT,

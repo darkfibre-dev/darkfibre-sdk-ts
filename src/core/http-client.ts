@@ -10,16 +10,11 @@ export class HttpClient {
   private client: AxiosInstance;
 
   constructor(baseURL: string, apiKey?: string) {
-    // HTTPS agent with keepalive for connection reuse.
-    // timeout is the socket inactivity timeout – kept well below any
-    // test-runner / caller timeout so a hung socket surfaces as an
-    // APIError('TIMEOUT') instead of a mysterious "test timed out."
     const httpsAgent = new https.Agent({
       keepAlive: true,
       keepAliveMsecs: 1000,
       maxSockets: 50,
       maxFreeSockets: 10,
-      timeout: 30000,
     });
 
     const headers: Record<string, string> = {
@@ -35,7 +30,7 @@ export class HttpClient {
       baseURL,
       headers,
       httpsAgent,
-      timeout: 30000, // 30 second default request timeout
+      timeout: 75_000,
     });
 
     // Response interceptor for error handling
@@ -62,7 +57,7 @@ export class HttpClient {
       }
     );
 
-    // Ping every 60 s to keep the connection warm (server closes at 65 s idle)
+    // Ping every 60 s to keep the connection warm (server closes at 70 s idle)
     setInterval(() => this.client.get('/ping').catch(() => {}), 60_000).unref();
   }
 

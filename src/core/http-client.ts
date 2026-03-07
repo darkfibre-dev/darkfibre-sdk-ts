@@ -61,6 +61,9 @@ export class HttpClient {
         throw error;
       }
     );
+
+    // Ping every 60 s to keep the connection warm (server closes at 65 s idle)
+    setInterval(() => this.client.get('/ping').catch(() => {}), 60_000).unref();
   }
 
   /**

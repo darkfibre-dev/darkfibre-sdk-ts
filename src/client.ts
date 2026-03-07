@@ -181,4 +181,5 @@ export class DarkfibreSDK {
     const response = await this.httpClient.get<ProfileResponse>('/auth/profile');
     return response.data.data;
   }
+
 }

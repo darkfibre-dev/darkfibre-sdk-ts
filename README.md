@@ -59,6 +59,8 @@ new DarkfibreSDK(config: SDKConfig)
 - `config.privateKey` - Base58-encoded Solana private key (32 or 64 bytes)
 - `config.baseUrl` - (Optional) API base URL (should include `/v1`). Defaults to `https://api.darkfibre.dev/v1`
 
+> The SDK pings the server every 60 s to keep the HTTPS connection alive, saving ~5–10 ms per every trade.
+
 ### Response Format
 
 All trading methods (`buy`, `sell`, `swap`) return a `TransactionResult` object with the following structure:

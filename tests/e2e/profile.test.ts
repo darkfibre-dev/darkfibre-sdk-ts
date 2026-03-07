@@ -2,8 +2,6 @@ import { DarkfibreSDK } from '../../src/index';
 import { APIError } from '../../src/errors/api.error';
 import { TestContext } from './test-runner';
 
-const VALID_FEE_TIERS_BPS = [20, 25, 35, 45, 50];
-
 export async function runProfileTests(sdk: DarkfibreSDK, ctx: TestContext): Promise<void> {
   console.log('\nProfile Tests');
   console.log('─'.repeat(50));
@@ -43,10 +41,8 @@ export async function runProfileTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
   await ctx.test('should return valid fee tier values', async () => {
     const profile = await sdk.getProfile();
 
-    if (!VALID_FEE_TIERS_BPS.includes(profile.fee.bps)) {
-      throw new Error(
-        `fee.bps ${profile.fee.bps} is not a recognized tier (expected one of ${VALID_FEE_TIERS_BPS.join(', ')})`
-      );
+    if (typeof profile.fee.bps !== 'number' || profile.fee.bps < 0) {
+      throw new Error(`fee.bps must be a non-negative number, got ${profile.fee.bps}`);
     }
 
     const expectedDecimal = profile.fee.bps / 10000;

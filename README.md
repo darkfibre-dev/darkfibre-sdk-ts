@@ -33,10 +33,11 @@ const sdk = new DarkfibreSDK({
   privateKey: 'your-base58-private-key',
 });
 
-// Buy tokens
+// Buy tokens with SOL as quote currency
 const result = await sdk.buy({
   mint: 'token-mint-address',
-  solAmount: 0.01,
+  quoteAmount: 0.01,
+  quoteMint: 'SOL',
   slippage: 0.05,
   priority: 'fast'
 });
@@ -139,13 +140,30 @@ console.log('30d volume:', profile.volume.sol30d, 'SOL');
 console.log('Current fee:', profile.fee.bps, 'bps');
 ```
 
+### Quote currencies
+
+Supported quote currencies are SOL, WSOL and USDC. You can pass them as string aliases (`'SOL'`, `'WSOL'`, `'USDC'`) anywhere a mint is expected, or use raw mint addresses. The named constants are also exported as `Mints`:
+
+- `SOL` maps to `So11111111111111111111111111111111111111112`
+- `WSOL` maps to `So11111111111111111111111111111111111111112`
+- `USDC` maps to `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`
+
+```typescript
+import { Mints } from '@darkfibre/sdk';
+
+Mints.SOL;  // 'So11111111111111111111111111111111111111112'
+Mints.WSOL; // 'So11111111111111111111111111111111111111112'
+Mints.USDC; // 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+```
+
 #### `buy(options: BuyOptions): Promise<TransactionResult>`
 
-Buy tokens using SOL.
+Buy a token by spending a quote currency (SOL, WSOL or USDC).
 
 **Parameters:**
-- `mint` - Token mint address to buy
-- `solAmount` - Amount of SOL to spend
+- `mint` - Token mint to buy
+- `quoteAmount` - Amount of the quote currency to spend
+- `quoteMint` - Quote currency (`'SOL'`, `'WSOL'`, `'USDC'` or a supported mint address)
 - `slippage` - Slippage tolerance (e.g., 0.01 for 1%)
 - `priority` - Transaction priority: `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
 - `maxPriceImpact` - (Optional) Maximum price impact allowed (e.g., 0.1 for 10%)
@@ -158,25 +176,23 @@ Buy tokens using SOL.
 ```typescript
 const result = await sdk.buy({
   mint: 'token-mint-address',
-  solAmount: 0.01,
+  quoteAmount: 0.01,
+  quoteMint: 'SOL',
   slippage: 0.05,
   priority: 'fast',
   maxPriceImpact: 0.1,      // Optional: reject if price impact > 10%
   maxPriorityCost: 0.05      // Optional: reject if priority fee > 0.05 SOL
 });
-
-console.log('Signature:', result.signature);
-console.log('Status:', result.status);
-console.log('Trade result:', result.tradeResult);
 ```
 
 #### `sell(options: SellOptions): Promise<TransactionResult>`
 
-Sell tokens for SOL.
+Sell a token for a quote currency (SOL, WSOL or USDC).
 
 **Parameters:**
-- `mint` - Token mint address to sell
+- `mint` - Token mint to sell
 - `tokenAmount` - Amount of tokens to sell
+- `quoteMint` - Quote currency to receive (`'SOL'`, `'WSOL'`, `'USDC'` or a mint address)
 - `slippage` - Slippage tolerance (e.g., 0.01 for 1%)
 - `priority` - Transaction priority: `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
 - `maxPriceImpact` - (Optional) Maximum price impact allowed (e.g., 0.1 for 10%).
@@ -190,6 +206,7 @@ Sell tokens for SOL.
 const result = await sdk.sell({
   mint: 'token-mint-address',
   tokenAmount: 1000,
+  quoteMint: 'SOL',
   slippage: 0.05,
   priority: 'fast',
   maxPriceImpact: 0.1,      // Optional: reject if price impact > 10%
@@ -199,12 +216,12 @@ const result = await sdk.sell({
 
 #### `swap(options: SwapOptions): Promise<TransactionResult>`
 
-Swap tokens using the generic swap endpoint (power endpoint).
+Swap tokens.
 
 **Parameters:**
-- `inputMint` - Input token mint address
-- `outputMint` - Output token mint address
-- `amount` - Amount to swap
+- `inputMint` - Input mint address or alias (`'SOL'`, `'WSOL'`, `'USDC'`)
+- `outputMint` - Output mint address or alias (`'SOL'`, `'WSOL'`, `'USDC'`)
+- `amount` - Amount to swap (interpreted according to `swapMode`)
 - `swapMode` - `'exactIn'` or `'exactOut'`
 - `slippage` - Slippage tolerance (e.g., 0.05 for 5%)
 - `priority` - `'economy'`, `'fast'`, `'faster'`, or `'fastest'`
@@ -213,15 +230,15 @@ Swap tokens using the generic swap endpoint (power endpoint).
 
 **Returns:** `TransactionResult` (see [Response Format](#response-format))
 
-**Note:** Currently, at least one of `inputMint` or `outputMint` must be SOL or WSOL. For more details, see the [swap API documentation](https://docs.darkfibre.dev/api/tx-swap/).
+**Note:** One side of the swap must be a supported quote currency (`SOL`, `WSOL` or `USDC`). For more details, see the [swap API documentation](https://docs.darkfibre.dev/api/tx-swap/).
 
 **Example:**
 
 ```typescript
 const result = await sdk.swap({
-  inputMint: 'So11111111111111111111111111111111111111112',
+  inputMint: 'USDC',
   outputMint: 'token-mint-address',
-  amount: 0.01,
+  amount: 5,
   swapMode: 'exactIn',
   slippage: 0.05,
   priority: 'fast',
@@ -262,11 +279,15 @@ import type {
   SellOptions,
   SwapOptions,
   SwapMode,
+  MintInput,
   TradeEstimates,
   TradeAmounts,
   TransactionResult,
   ProfileResult,
 } from '@darkfibre/sdk';
+
+// Mint constants are exported as values
+import { Mints } from '@darkfibre/sdk';
 ```
 
 ## Development

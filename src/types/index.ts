@@ -7,6 +7,7 @@ export type {
   SellOptions,
   SwapOptions,
   SwapMode,
+  MintInput,
   TradeEstimates,
   TradeAmounts,
   TransactionResult,

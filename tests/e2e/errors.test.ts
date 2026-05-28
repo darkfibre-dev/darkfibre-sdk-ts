@@ -2,7 +2,7 @@ import { DarkfibreSDK } from '../../src/index';
 import {
   SOL_MINT,
   TEST_TOKEN_MINT,
-  TEST_SOL_AMOUNT,
+  TEST_QUOTE_AMOUNT,
   TEST_SLIPPAGE,
   TEST_PRIORITY,
   VERY_LOW_MAX_PRICE_IMPACT,
@@ -23,7 +23,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
     try {
       await sdk.buy({
         mint: TEST_TOKEN_MINT,
-        solAmount: TEST_SOL_AMOUNT,
+        quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
         maxPriceImpact: VERY_LOW_MAX_PRICE_IMPACT,
@@ -42,7 +43,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
   await ctx.test('should throw ValidationError when maxPriceImpact is exceeded in sell', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -53,6 +55,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.sell({
         mint: TEST_TOKEN_MINT,
         tokenAmount: buyResult.tradeResult.outputAmount,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
         maxPriceImpact: VERY_LOW_MAX_PRICE_IMPACT,
@@ -73,6 +76,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.sell({
         mint: TEST_TOKEN_MINT,
         tokenAmount: buyResult.tradeResult.outputAmount,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
       });
@@ -86,7 +90,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.swap({
         inputMint: SOL_MINT,
         outputMint: TEST_TOKEN_MINT,
-        amount: TEST_SOL_AMOUNT,
+        amount: TEST_QUOTE_AMOUNT,
         swapMode: 'exactIn',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
@@ -108,7 +112,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
     try {
       await sdk.buy({
         mint: TEST_TOKEN_MINT,
-        solAmount: TEST_SOL_AMOUNT,
+        quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
         maxPriorityCost: VERY_LOW_MAX_PRIORITY_COST,
@@ -127,7 +132,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
   await ctx.test('should throw ValidationError when maxPriorityCost is exceeded in sell', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -138,6 +144,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.sell({
         mint: TEST_TOKEN_MINT,
         tokenAmount: buyResult.tradeResult.outputAmount,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
         maxPriorityCost: VERY_LOW_MAX_PRIORITY_COST,
@@ -158,6 +165,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.sell({
         mint: TEST_TOKEN_MINT,
         tokenAmount: buyResult.tradeResult.outputAmount,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
       });
@@ -171,7 +179,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.swap({
         inputMint: SOL_MINT,
         outputMint: TEST_TOKEN_MINT,
-        amount: TEST_SOL_AMOUNT,
+        amount: TEST_QUOTE_AMOUNT,
         swapMode: 'exactIn',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
@@ -198,7 +206,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
     try {
       await invalidSDK.buy({
         mint: TEST_TOKEN_MINT,
-        solAmount: TEST_SOL_AMOUNT,
+        quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
       });
@@ -217,7 +226,8 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
     try {
       await sdk.buy({
         mint: INVALID_MINT,
-        solAmount: TEST_SOL_AMOUNT,
+        quoteAmount: TEST_QUOTE_AMOUNT,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
       });
@@ -241,6 +251,7 @@ export async function runErrorTests(sdk: DarkfibreSDK, ctx: TestContext): Promis
       await sdk.sell({
         mint: TEST_TOKEN_MINT,
         tokenAmount: hugeAmount,
+        quoteMint: 'SOL',
         slippage: TEST_SLIPPAGE,
         priority: TEST_PRIORITY,
       });

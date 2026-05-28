@@ -14,12 +14,16 @@ export type {
   SellOptions,
   SwapOptions,
   SwapMode,
+  MintInput,
   TradeEstimates,
   TradeAmounts,
   TransactionResult,
   RegisterResult,
   ProfileResult,
 } from './types/index.js';
+
+// Mint constants and alias resolver
+export { Mints, resolveMint } from './constants/mints.js';
 
 // Errors
 export { APIError, SigningError, ValidationError } from './errors/index.js';

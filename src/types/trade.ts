@@ -6,18 +6,28 @@ import { Priority } from './config.js';
 export type SwapMode = 'exactIn' | 'exactOut';
 
 /**
+ * Mint address or one of the SDK aliases: `'SOL'`, `'WSOL'`, `'USDC'`.
+ */
+export type MintInput = 'SOL' | 'WSOL' | 'USDC' | (string & {});
+
+/**
  * Options for buying tokens
  */
 export interface BuyOptions {
   /**
    * Token mint address to buy
    */
-  mint: string;
+  mint: MintInput;
 
   /**
-   * Amount of SOL to spend
+   * Amount of the quote currency to spend
    */
-  solAmount: number;
+  quoteAmount: number;
+
+  /**
+   * Quote currency to spend (`'SOL'`, `'WSOL'`, `'USDC'` or a mint address)
+   */
+  quoteMint: MintInput;
 
   /**
    * Slippage tolerance (e.g., 0.01 for 1%)
@@ -51,12 +61,17 @@ export interface SellOptions {
   /**
    * Token mint address to sell
    */
-  mint: string;
+  mint: MintInput;
 
   /**
    * Amount of tokens to sell
    */
   tokenAmount: number;
+
+  /**
+   * Quote currency to receive (`'SOL'`, `'WSOL'`, `'USDC'` or a mint address)
+   */
+  quoteMint: MintInput;
 
   /**
    * Slippage tolerance (e.g., 0.01 for 1%)
@@ -88,14 +103,14 @@ export interface SellOptions {
  */
 export interface SwapOptions {
   /**
-   * Input mint address or "SOL" for native SOL
+   * Input mint address or alias (`'SOL'`, `'WSOL'`, `'USDC'`)
    */
-  inputMint: string;
+  inputMint: MintInput;
 
   /**
-   * Output mint address or "SOL" for native SOL
+   * Output mint address or alias (`'SOL'`, `'WSOL'`, `'USDC'`)
    */
-  outputMint: string;
+  outputMint: MintInput;
 
   /**
    * Amount to swap (interpreted based on swapMode)

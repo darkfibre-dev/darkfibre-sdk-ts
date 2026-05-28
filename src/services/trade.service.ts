@@ -1,6 +1,7 @@
 import { HttpClient } from '../core/http-client.js';
 import { TransactionSigner } from '../core/signer.js';
 import { ValidationError } from '../errors/index.js';
+import { resolveMint } from '../constants/mints.js';
 import {
   BuyOptions,
   SellOptions,
@@ -51,110 +52,11 @@ export class TradeService {
   }
 
   /**
-   * Execute a buy operation
-   * @param options - Buy parameters
-   * @returns Transaction result with signature and trade amounts
-   */
-  public async buy(options: BuyOptions): Promise<TransactionResult> {
-    // Get unsigned transaction from API
-    const buyResponse = await this.httpClient.post<TradeResponse, BuyOptions>('/tx/buy', options);
-
-    const { submissionToken, unsignedTransaction, estimates, priorityCost } = buyResponse.data.data;
-
-    // Validate limits before signing (we have exact values at build time)
-    this.validatePriceImpact(estimates.priceImpact, options.maxPriceImpact);
-    this.validatePriorityCost(priorityCost, options.maxPriorityCost);
-
-    // Sign the transaction
-    const signedTransaction = await this.signer.signTransaction(unsignedTransaction);
-
-    // Submit the signed transaction
-    const submitRequest: SubmitRequest = {
-      submissionToken,
-      signedTransaction,
-    };
-
-    const submitResponse = await this.httpClient.post<SubmitResponse, SubmitRequest>(
-      '/tx/submit',
-      submitRequest
-    );
-
-    const { signature, status, slot, platform, inputMint, outputMint, tradeResult } =
-      submitResponse.data.data;
-
-    return {
-      signature,
-      status,
-      slot,
-      platform,
-      inputMint,
-      outputMint,
-      tradeResult: tradeResult ?? {
-        inputAmount: estimates.inputAmount,
-        outputAmount: estimates.outputAmount,
-      },
-      priorityCost,
-    };
-  }
-
-  /**
-   * Execute a sell operation
-   * @param options - Sell parameters
-   * @returns Transaction result with signature and trade amounts
-   */
-  public async sell(options: SellOptions): Promise<TransactionResult> {
-    // Get unsigned transaction from API
-    const sellResponse = await this.httpClient.post<TradeResponse, SellOptions>(
-      '/tx/sell',
-      options
-    );
-
-    const { submissionToken, unsignedTransaction, estimates, priorityCost } =
-      sellResponse.data.data;
-
-    // Validate limits before signing (we have exact values at build time)
-    this.validatePriceImpact(estimates.priceImpact, options.maxPriceImpact);
-    this.validatePriorityCost(priorityCost, options.maxPriorityCost);
-
-    // Sign the transaction
-    const signedTransaction = await this.signer.signTransaction(unsignedTransaction);
-
-    // Submit the signed transaction
-    const submitRequest: SubmitRequest = {
-      submissionToken,
-      signedTransaction,
-    };
-
-    const submitResponse = await this.httpClient.post<SubmitResponse, SubmitRequest>(
-      '/tx/submit',
-      submitRequest
-    );
-
-    const { signature, status, slot, platform, inputMint, outputMint, tradeResult } =
-      submitResponse.data.data;
-
-    return {
-      signature,
-      status,
-      slot,
-      platform,
-      inputMint,
-      outputMint,
-      tradeResult: tradeResult ?? {
-        inputAmount: estimates.inputAmount,
-        outputAmount: estimates.outputAmount,
-      },
-      priorityCost,
-    };
-  }
-
-  /**
-   * Execute a swap operation
+   * Builds, signs and submits a swap transaction
    * @param options - Swap parameters
    * @returns Transaction result with signature and trade amounts
    */
-  public async swap(options: SwapOptions): Promise<TransactionResult> {
-    // Get unsigned transaction from API
+  private async executeSwap(options: SwapOptions): Promise<TransactionResult> {
     const swapResponse = await this.httpClient.post<TradeResponse, SwapOptions>(
       '/tx/swap',
       options
@@ -163,14 +65,11 @@ export class TradeService {
     const { submissionToken, unsignedTransaction, estimates, priorityCost } =
       swapResponse.data.data;
 
-    // Validate limits before signing (we have exact values at build time)
     this.validatePriceImpact(estimates.priceImpact, options.maxPriceImpact);
     this.validatePriorityCost(priorityCost, options.maxPriorityCost);
 
-    // Sign the transaction
     const signedTransaction = await this.signer.signTransaction(unsignedTransaction);
 
-    // Submit the signed transaction
     const submitRequest: SubmitRequest = {
       submissionToken,
       signedTransaction,
@@ -197,5 +96,54 @@ export class TradeService {
       },
       priorityCost,
     };
+  }
+
+  /**
+   * Execute a buy operation
+   * @param options - Buy parameters
+   * @returns Transaction result with signature and trade amounts
+   */
+  public async buy(options: BuyOptions): Promise<TransactionResult> {
+    return this.executeSwap({
+      inputMint: resolveMint(options.quoteMint),
+      outputMint: resolveMint(options.mint),
+      amount: options.quoteAmount,
+      swapMode: 'exactIn',
+      slippage: options.slippage,
+      priority: options.priority,
+      maxPriceImpact: options.maxPriceImpact,
+      maxPriorityCost: options.maxPriorityCost,
+    });
+  }
+
+  /**
+   * Execute a sell operation
+   * @param options - Sell parameters
+   * @returns Transaction result with signature and trade amounts
+   */
+  public async sell(options: SellOptions): Promise<TransactionResult> {
+    return this.executeSwap({
+      inputMint: resolveMint(options.mint),
+      outputMint: resolveMint(options.quoteMint),
+      amount: options.tokenAmount,
+      swapMode: 'exactIn',
+      slippage: options.slippage,
+      priority: options.priority,
+      maxPriceImpact: options.maxPriceImpact,
+      maxPriorityCost: options.maxPriorityCost,
+    });
+  }
+
+  /**
+   * Execute a swap operation
+   * @param options - Swap parameters
+   * @returns Transaction result with signature and trade amounts
+   */
+  public async swap(options: SwapOptions): Promise<TransactionResult> {
+    return this.executeSwap({
+      ...options,
+      inputMint: resolveMint(options.inputMint),
+      outputMint: resolveMint(options.outputMint),
+    });
   }
 }

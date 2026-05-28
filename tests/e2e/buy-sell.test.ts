@@ -1,7 +1,9 @@
 import { DarkfibreSDK, Priority } from '../../src/index';
 import {
   TEST_TOKEN_MINT,
-  TEST_SOL_AMOUNT,
+  TEST_USDC_PAIRED_TOKEN_MINT,
+  TEST_QUOTE_AMOUNT,
+  TEST_USDC_AMOUNT,
   TEST_SLIPPAGE,
   TEST_PRIORITY,
   OPERATION_DELAY_MS,
@@ -14,15 +16,17 @@ import { TestContext, delay } from './test-runner';
 async function buyAndSellBack(
   sdk: DarkfibreSDK,
   mint: string,
-  solAmount: number,
+  quoteAmount: number,
   slippage: number,
-  priority: Priority
+  priority: Priority,
+  quoteMint: 'SOL' | 'WSOL' | 'USDC' = 'SOL'
 ) {
   const buyResult = await sdk.buy({
     mint,
-    solAmount,
+    quoteAmount,
+    quoteMint,
     slippage,
-    priority
+    priority,
   });
 
   await delay(OPERATION_DELAY_MS);
@@ -30,8 +34,9 @@ async function buyAndSellBack(
   const sellResult = await sdk.sell({
     mint,
     tokenAmount: buyResult.tradeResult.outputAmount,
+    quoteMint,
     slippage,
-    priority
+    priority,
   });
 
   return { buyResult, sellResult };
@@ -45,7 +50,7 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     const { buyResult, sellResult } = await buyAndSellBack(
       sdk,
       TEST_TOKEN_MINT,
-      TEST_SOL_AMOUNT,
+      TEST_QUOTE_AMOUNT,
       TEST_SLIPPAGE,
       TEST_PRIORITY
     );
@@ -90,7 +95,8 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
   await ctx.test('should buy with maxPriceImpact limit and sell back', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
       maxPriceImpact: 0.5,
@@ -103,6 +109,7 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     const sellResult = await sdk.sell({
       mint: TEST_TOKEN_MINT,
       tokenAmount: buyResult.tradeResult.outputAmount,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -116,7 +123,8 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
   await ctx.test('should buy with maxPriorityCost limit and sell back', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
       maxPriorityCost: 0.001,
@@ -132,6 +140,7 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     const sellResult = await sdk.sell({
       mint: TEST_TOKEN_MINT,
       tokenAmount: buyResult.tradeResult.outputAmount,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -145,7 +154,8 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
   await ctx.test('should sell with maxPriceImpact limit', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -155,6 +165,7 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     const sellResult = await sdk.sell({
       mint: TEST_TOKEN_MINT,
       tokenAmount: buyResult.tradeResult.outputAmount,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
       maxPriceImpact: 0.5,
@@ -172,7 +183,8 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
   await ctx.test('should sell with maxPriorityCost limit', async () => {
     const buyResult = await sdk.buy({
       mint: TEST_TOKEN_MINT,
-      solAmount: TEST_SOL_AMOUNT,
+      quoteAmount: TEST_QUOTE_AMOUNT,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
     });
@@ -182,6 +194,7 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     const sellResult = await sdk.sell({
       mint: TEST_TOKEN_MINT,
       tokenAmount: buyResult.tradeResult.outputAmount,
+      quoteMint: 'SOL',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
       maxPriorityCost: 0.001,
@@ -196,6 +209,29 @@ export async function runBuySellTests(sdk: DarkfibreSDK, ctx: TestContext): Prom
     }
     if (sellResult.tradeResult && sellResult.tradeResult.inputAmount !== buyResult.tradeResult.outputAmount) {
       throw new Error('Sell amount does not match buy amount');
+    }
+  });
+
+  await ctx.test('should buy with USDC quote and sell back to USDC', async () => {
+    const { buyResult, sellResult } = await buyAndSellBack(
+      sdk,
+      TEST_USDC_PAIRED_TOKEN_MINT,
+      TEST_USDC_AMOUNT,
+      TEST_SLIPPAGE,
+      TEST_PRIORITY,
+      'USDC'
+    );
+
+    if (!buyResult.signature) throw new Error('Buy (USDC) signature is missing');
+    if (buyResult.outputMint !== TEST_USDC_PAIRED_TOKEN_MINT) {
+      throw new Error(`Buy (USDC) outputMint mismatch: expected ${TEST_USDC_PAIRED_TOKEN_MINT}, got ${buyResult.outputMint}`);
+    }
+    if (!sellResult.signature) throw new Error('Sell (USDC) signature is missing');
+    if (sellResult.inputMint !== TEST_USDC_PAIRED_TOKEN_MINT) {
+      throw new Error(`Sell (USDC) inputMint mismatch: expected ${TEST_USDC_PAIRED_TOKEN_MINT}, got ${sellResult.inputMint}`);
+    }
+    if (sellResult.tradeResult.inputAmount !== buyResult.tradeResult.outputAmount) {
+      throw new Error('Sell (USDC) amount does not match buy amount');
     }
   });
 }

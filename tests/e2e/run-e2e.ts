@@ -19,7 +19,12 @@ dotenv.config();
 
 // Configuration
 const DELAY_MS = 5000; // Delay between tests (5 seconds)
+const DEFAULT_BASE_URL = 'https://api.darkfibre.dev/v1';
 const REQUIRED_ENV_VARS = ['API_KEY', 'PRIVATE_KEY'] as const;
+
+function getBaseUrl(): string {
+  return process.env.API_URL?.trim() || DEFAULT_BASE_URL;
+}
 
 /**
  * Validate that all required environment variables are present
@@ -45,8 +50,11 @@ function validateEnv(): void {
  * Main test runner
  */
 async function main() {
+  const baseUrl = getBaseUrl();
+
   console.log('Darkfibre SDK E2E Tests');
   console.log('═'.repeat(50));
+  console.log(`API URL: ${baseUrl}`);
   console.log(`Delay between tests: ${DELAY_MS}ms`);
   console.log('═'.repeat(50));
 
@@ -57,6 +65,7 @@ async function main() {
   const sdk = new DarkfibreSDK({
     apiKey: process.env.API_KEY!,
     privateKey: process.env.PRIVATE_KEY!,
+    baseUrl,
   });
 
   // Initialize test statistics

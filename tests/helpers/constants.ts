@@ -3,9 +3,14 @@
  */
 
 /**
- * SOL mint address (native SOL)
+ * Wrapped SOL mint address (used as the quote mint for SOL/WSOL trades)
  */
 export const SOL_MINT = 'So11111111111111111111111111111111111111112';
+
+/**
+ * Canonical USDC mint address on Solana mainnet
+ */
+export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 /**
  * Test token mint address (from your example)
@@ -14,9 +19,18 @@ export const SOL_MINT = 'So11111111111111111111111111111111111111112';
 export const TEST_TOKEN_MINT = '5UUH9RTDiSpq6HKS6bp4NdU9PNJpXRXuiw6ShBTBhgH2';
 
 /**
+ * Test token mint with a USDC pair.
+ */
+export const TEST_USDC_PAIRED_TOKEN_MINT = '4MqHnbYT4sU4SGeLucMtNFCL5YzbY7b1r3CMsYgvpump';
+
+/**
  * Small test amounts to minimize cost
  */
-export const TEST_SOL_AMOUNT = 0.0001;
+export const TEST_QUOTE_AMOUNT = 0.0001;
+/**
+ * Small USDC test amount (1 cent)
+ */
+export const TEST_USDC_AMOUNT = 0.01;
 export const TEST_SLIPPAGE = 0.05; // 5%
 export const TEST_PRIORITY = 'economy' as const;
 

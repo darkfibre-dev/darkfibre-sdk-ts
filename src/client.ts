@@ -27,7 +27,8 @@ import bs58 from 'bs58';
  *
  * const result = await sdk.buy({
  *   mint: 'token-mint-address',
- *   solAmount: 0.1,
+ *   quoteAmount: 0.1,
+ *   quoteMint: 'SOL',
  *   slippage: 0.01,
  *   priority: 'fast'
  * });
@@ -104,7 +105,7 @@ export class DarkfibreSDK {
   }
 
   /**
-   * Buy tokens using SOL
+   * Buy a token by spending a quote currency (SOL, WSOL or USDC).
    * @param options - Buy operation parameters
    * @returns Transaction result with signature and trade amounts
    *
@@ -112,11 +113,11 @@ export class DarkfibreSDK {
    * ```typescript
    * const result = await sdk.buy({
    *   mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-   *   solAmount: 0.1,
+   *   quoteAmount: 0.1,
+   *   quoteMint: 'SOL',
    *   slippage: 0.01,
    *   priority: 'fast'
    * });
-   * console.log('Transaction signature:', result.signature);
    * ```
    */
   public async buy(options: BuyOptions): Promise<TransactionResult> {
@@ -124,7 +125,7 @@ export class DarkfibreSDK {
   }
 
   /**
-   * Sell tokens for SOL
+   * Sell a token for a quote currency (SOL, WSOL or USDC).
    * @param options - Sell operation parameters
    * @returns Transaction result with signature and trade amounts
    *
@@ -133,10 +134,10 @@ export class DarkfibreSDK {
    * const result = await sdk.sell({
    *   mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
    *   tokenAmount: 100,
+   *   quoteMint: 'USDC',
    *   slippage: 0.01,
    *   priority: 'fast'
    * });
-   * console.log('Transaction signature:', result.signature);
    * ```
    */
   public async sell(options: SellOptions): Promise<TransactionResult> {
@@ -144,21 +145,20 @@ export class DarkfibreSDK {
   }
 
   /**
-   * Swap tokens (generic swap endpoint)
+   * Swap tokens. Accepts `'SOL'` / `'WSOL'` / `'USDC'` aliases or raw mint addresses.
    * @param options - Swap operation parameters
    * @returns Transaction result with signature and trade amounts
    *
    * @example
    * ```typescript
    * const result = await sdk.swap({
-   *   inputMint: 'SOL',
+   *   inputMint: 'USDC',
    *   outputMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-   *   amount: 0.002,
+   *   amount: 5,
    *   swapMode: 'exactIn',
    *   slippage: 0.05,
    *   priority: 'fast'
    * });
-   * console.log('Transaction signature:', result.signature);
    * ```
    */
   public async swap(options: SwapOptions): Promise<TransactionResult> {

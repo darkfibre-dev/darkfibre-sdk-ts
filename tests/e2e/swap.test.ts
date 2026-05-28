@@ -2,7 +2,9 @@ import { DarkfibreSDK, Priority } from '../../src/index';
 import {
   SOL_MINT,
   TEST_TOKEN_MINT,
-  TEST_SOL_AMOUNT,
+  TEST_USDC_PAIRED_TOKEN_MINT,
+  TEST_QUOTE_AMOUNT,
+  TEST_USDC_AMOUNT,
   TEST_SLIPPAGE,
   TEST_PRIORITY,
   OPERATION_DELAY_MS,
@@ -50,7 +52,7 @@ export async function runSwapTests(sdk: DarkfibreSDK, ctx: TestContext): Promise
     const { swapToTokenResult, swapToSolResult } = await swapAndSwapBack(
       sdk,
       TEST_TOKEN_MINT,
-      TEST_SOL_AMOUNT,
+      TEST_QUOTE_AMOUNT,
       TEST_SLIPPAGE,
       TEST_PRIORITY
     );
@@ -95,7 +97,7 @@ export async function runSwapTests(sdk: DarkfibreSDK, ctx: TestContext): Promise
     const swap1Result = await sdk.swap({
       inputMint: SOL_MINT,
       outputMint: TEST_TOKEN_MINT,
-      amount: TEST_SOL_AMOUNT,
+      amount: TEST_QUOTE_AMOUNT,
       swapMode: 'exactIn',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
@@ -125,7 +127,7 @@ export async function runSwapTests(sdk: DarkfibreSDK, ctx: TestContext): Promise
     const swap1Result = await sdk.swap({
       inputMint: SOL_MINT,
       outputMint: TEST_TOKEN_MINT,
-      amount: TEST_SOL_AMOUNT,
+      amount: TEST_QUOTE_AMOUNT,
       swapMode: 'exactIn',
       slippage: TEST_SLIPPAGE,
       priority: TEST_PRIORITY,
@@ -151,6 +153,41 @@ export async function runSwapTests(sdk: DarkfibreSDK, ctx: TestContext): Promise
     if (!swap2Result.signature) throw new Error('Swap back signature is missing');
     if (swap2Result.tradeResult.inputAmount !== swap1Result.tradeResult.outputAmount) {
       throw new Error('Swap amounts do not match');
+    }
+  });
+
+  await ctx.test("should resolve 'USDC' alias on swap and round-trip", async () => {
+    const swapToTokenResult = await sdk.swap({
+      inputMint: 'USDC',
+      outputMint: TEST_USDC_PAIRED_TOKEN_MINT,
+      amount: TEST_USDC_AMOUNT,
+      swapMode: 'exactIn',
+      slippage: TEST_SLIPPAGE,
+      priority: TEST_PRIORITY,
+    });
+
+    if (!swapToTokenResult.signature) throw new Error('USDC -> token signature is missing');
+    if (swapToTokenResult.outputMint !== TEST_USDC_PAIRED_TOKEN_MINT) {
+      throw new Error(`USDC -> token outputMint mismatch: expected ${TEST_USDC_PAIRED_TOKEN_MINT}, got ${swapToTokenResult.outputMint}`);
+    }
+
+    await delay(OPERATION_DELAY_MS);
+
+    const swapBackResult = await sdk.swap({
+      inputMint: TEST_USDC_PAIRED_TOKEN_MINT,
+      outputMint: 'USDC',
+      amount: swapToTokenResult.tradeResult.outputAmount,
+      swapMode: 'exactIn',
+      slippage: TEST_SLIPPAGE,
+      priority: TEST_PRIORITY,
+    });
+
+    if (!swapBackResult.signature) throw new Error('token -> USDC signature is missing');
+    if (swapBackResult.inputMint !== TEST_USDC_PAIRED_TOKEN_MINT) {
+      throw new Error(`token -> USDC inputMint mismatch: expected ${TEST_USDC_PAIRED_TOKEN_MINT}, got ${swapBackResult.inputMint}`);
+    }
+    if (swapBackResult.tradeResult.inputAmount !== swapToTokenResult.tradeResult.outputAmount) {
+      throw new Error('USDC round-trip amounts do not match');
     }
   });
 }

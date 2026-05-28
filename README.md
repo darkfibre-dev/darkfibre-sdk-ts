@@ -119,7 +119,7 @@ For simpler browser-based wallet registration, you can use: [https://darkfibre.d
 
 #### `getProfile(): Promise<ProfileResult>`
 
-Returns the authenticated user's wallet info, 30-day rolling trade volume, and current fee tier. The fee tier is computed live from the rolling window on every request.
+Returns the authenticated user's wallet info, 30-day rolling trade volume, and current fee tier. The fee tier is computed nightly at UTC 00:00 from the 30-day rolling window.
 
 **Returns:** `ProfileResult` with:
 - `walletAddress` - Registered wallet address
